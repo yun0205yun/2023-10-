@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST Form Example</title>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <form id="myForm" action="" method="post">
+        <div>
+            <label for="nameInput">名字：</label>
+            <input type="text" id="nameInput" name="name">
+            <button class="showAlertBtn">警示</button>
+            <button class="cancelSelectionBtn" data-type="text">取消選擇</button>
+        </div>
+
+        <div>
+            <label for="choice">下拉式選項：</label>
+            <select id="choice" name="choice">
+                <option>請選擇</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <button class="showAlertBtn">警示</button>
+            <button class="cancelSelectionBtn" data-type="select">取消選擇</button>
+        </div>
+
+        <div>
+            <label for="radio1">選項(單選)</label>
+            <input type="radio" id="radio1" name="contact1" value="1" />
+            <label for="radio1">1</label>
+
+            <input type="radio" id="radio2" name="contact1" value="2" />
+            <label for="radio2">2</label>
+
+            <input type="radio" id="radio3" name="contact1" value="3" />
+            <label for="radio3">3</label>
+
+            <button class="showAlertBtn">警示</button>
+            <button class="cancelSelectionBtn" data-type="radio">取消選擇</button>
+        </div>
+
+        <div>
+            <label for="checkbox1">選項(複選)</label>
+            <input type="checkbox" id="checkbox1" name="contact2" value="1" />
+            <label for="checkbox1">1</label>
+
+            <input type="checkbox" id="checkbox2" name="contact2" value="2" />
+            <label for="checkbox2">2</label>
+
+            <input type="checkbox" id="checkbox3" name="contact2" value="3" />
+            <label for="checkbox3">3</label>
+            <button class="showAlertBtn">警示</button>
+            <button class="cancelSelectionBtn" data-type="checkbox">取消選擇</button>
+        </div>
+
+        <div><button type="submit" onclick="submitForm()">發送 POST 請求</button></div>
+    </form>
+
+    <script>
+        function submitForm() {
+            // Your code to gather form data
+            var formData = {
+                name: $('#nameInput').val(),
+                choice: $('#choice').val(),
+                contact1: $('input[name=contact1]:checked').val(),
+                contact2: $('input[name=contact2]:checked').map(function () {
+                    return this.value;
+                }).get().join(',')
+            };
+
+            // Make a POST request
+            $.ajax({
+                type: 'POST',
+                url: $('#myForm').attr('action'),
+                data: formData,
+                success: function (response) {
+                    // Handle the success response
+                    alert('POST request sent successfully!');
+                    console.log(response);
+                },
+                error: function (error) {
+                    // Handle the error response
+                    alert('Error sending POST request!');
+                    console.error(error);
+                }
+            });
+        }
+
+        $('.showAlertBtn').click(function () {
+            var labelDom = $(this).parent().find('label');
+            var forAttr = labelDom.attr('for');
+            var value = "";
+
+            if (forAttr === 'radio1') {
+                value = $('input[name*=contact1]:checked').val();
+            } else if (forAttr === 'checkbox1') {
+                value = $('input[name*=contact2]:checked');
+                if (value.length > 0) {
+                    var v = [];
+                    value.each(function (i, e) {
+                        v.push($(e).val())
+                    })
+                    value = v.join(',');
+                }
+            } else {
+                value = $('#' + forAttr).val();
+            }
+
+            if (value) {
+                alert(value);
+            }
+        });
+
+
+        $('.cancelSelectionBtn').click(function () {
+            var type = $(this).data('type');
+            if (type === 'text') {
+                $('#nameInput').val('');
+            } else if (type === 'select') {
+                $('#choice').val('');
+            } else if (type === 'radio') {
+                $('input[name*=contact1]').prop('checked', false);
+            } else if (type === 'checkbox') {
+                $('input[name*=contact2]').prop('checked', false);
+            }
+        });
+    </script>
+</body>
+</html>
