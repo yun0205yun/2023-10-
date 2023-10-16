@@ -1,1 +1,17 @@
 10/11-10/13閱讀.NET 本事−非同步程式設計
+USE LOG;
+
+CREATE TABLE Remember (
+    
+    Username NVARCHAR(255) NOT NULL,
+	Password NVARCHAR(255) NOT NULL,
+    RememberMe BIT NOT NULL
+);
+
+go
+DECLARE @Username NVARCHAR(255) = '230887'; -- 使用者名稱，根據實際情況填入
+DECLARE @Password NVARCHAR(255) = 'yyy'; -- 使用者密碼，這裡應該是經過適當加密的密碼
+DECLARE @RememberMe BIT = 1; -- 1 表示要記住帳號，0 表示不記住
+
+INSERT INTO Remember (Username, Password, RememberMe)
+VALUES (@Username, @Password, @RememberMe);
